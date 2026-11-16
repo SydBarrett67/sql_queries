@@ -5,7 +5,7 @@ group by citta
 having citta = 'Roma';
 
 -- 02
-select citta, count(*)
+select importo
 from cliente
-group by citta
-having citta = 'Roma';
+where importo > 200
+order by importo
