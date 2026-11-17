@@ -53,8 +53,8 @@ ORDER BY SUM(importo) DESC;
 
 --09
 SELECT nome, cognome, SUM(importo)
-FROM Clienti
-JOIN Ordini ON Clienti.id_cliente = Ordini.id_cliente
+FROM Cliente, Ordine
+WHERE Cliente.id_cliente = Ordine.id_cliente
 GROUP BY Clienti.id_cliente
 HAVING SUM(importo) > 600;
 
@@ -62,7 +62,7 @@ HAVING SUM(importo) > 600;
 --10
 SELECT nome, cognome, COUNT(*), AVG(importo)
 FROM Clienti
-JOIN Ordini ON Clienti.id_cliente = Ordini.id_cliente
+WHERE Cliente.id_cliente = Ordine.id_cliente
 GROUP BY Clienti.id_cliente
 HAVING COUNT(*) >= 3 AND AVG(importo) > 200;
 
@@ -70,7 +70,7 @@ HAVING COUNT(*) >= 3 AND AVG(importo) > 200;
 --11
 SELECT citta, COUNT(*), SUM(importo), AVG(importo)
 FROM Clienti
-JOIN Ordini ON Clienti.id_cliente = Ordini.id_cliente
+WHERE Cliente.id_cliente = Ordine.id_cliente
 GROUP BY citta
 HAVING SUM(importo) > 700;
 
@@ -78,9 +78,9 @@ HAVING SUM(importo) > 700;
 --12
 SELECT nome, cognome, COUNT(*), SUM(importo)
 FROM Clienti
-JOIN Ordini ON Clienti.id_cliente = Ordini.id_cliente
-WHERE data_ordine >= '2026-03-01'
-AND data_ordine < '2026-07-01'
+WHERE Cliente.id_cliente = Ordine.id_cliente
+    AND data_ordine >= '2026-03-01'
+    AND data_ordine < '2026-07-01'
 GROUP BY Clienti.id_cliente
 HAVING COUNT(*) >= 2 AND SUM(importo) > 400;
 
@@ -91,30 +91,3 @@ FROM Clienti
 JOIN Ordini ON Clienti.id_cliente = Ordini.id_cliente
 GROUP BY Clienti.id_cliente
 HAVING MAX(importo) > 500 AND SUM(importo) > 800;
-
-
---14
-SELECT nome, cognome, SUM(importo)
-FROM Clienti
-JOIN Ordini ON Clienti.id_cliente = Ordini.id_cliente
-GROUP BY Clienti.id_cliente
-HAVING SUM(importo) > (
-    SELECT AVG(totale)
-    FROM (
-        SELECT SUM(importo) AS totale
-        FROM Ordini
-        GROUP BY id_cliente
-    ) AS T
-);
-
-
---15
-SELECT nome, cognome, citta, COUNT(*), SUM(importo), AVG(importo), MAX(importo)
-FROM Clienti
-JOIN Ordini ON Clienti.id_cliente = Ordini.id_cliente
-GROUP BY Clienti.id_cliente
-HAVING COUNT(*) >= 3
-AND SUM(importo) > 500
-AND AVG(importo) > (SELECT AVG(importo) FROM Ordini)
-AND MAX(importo) > 300
-ORDER BY SUM(importo) DESC;
